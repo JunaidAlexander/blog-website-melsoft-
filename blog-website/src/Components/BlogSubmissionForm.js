@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import "../components/BlogSubmissionForm.css"; // Add your CSS file import
 
+//commented for the purpose of merging
 const BlogSubmissionForm = () => {
   const [newPost, setNewPost] = useState({ title: "", content: "" });
   const [posts, setPosts] = useState([]);
