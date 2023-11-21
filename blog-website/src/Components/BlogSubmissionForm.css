@@ -1,49 +1,54 @@
-body {
-  font-family: "Arial", sans-serif;
-  background-color: #f8f9fa;
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-}
+/* BlogSubmissionForm.css */
 
-form {
+.form-container {
   max-width: 600px;
-  margin: 50px auto;
+  margin: auto;
   padding: 20px;
-  background-color: #fff;
+  border: 1px solid #ccc;
   border-radius: 8px;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-label {
-  display: block;
-  font-weight: bold;
-  margin-bottom: 8px;
+  margin-top: 20px;
 }
 
 input,
-textarea {
+textarea,
+button {
+  margin-bottom: 10px;
   width: 100%;
-  padding: 10px;
-  margin-bottom: 16px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  padding: 8px;
   box-sizing: border-box;
 }
 
-textarea {
-  resize: vertical;
-}
-
 button {
-  background-color: #007bff;
-  color: #fff;
-  padding: 12px 20px;
+  background-color: #4caf50;
+  color: white;
   border: none;
-  border-radius: 4px;
+  padding: 10px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
   cursor: pointer;
+  border-radius: 4px;
 }
 
 button:hover {
-  background-color: #0056b3;
+  background-color: #45a049;
+}
+
+.post-card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin-top: 10px;
+}
+
+.created-posts {
+  margin-top: 20px;
+}
+
+h3 {
+  margin-bottom: 10px;
+}
+
+h2 {
+  text-align: center;
 }

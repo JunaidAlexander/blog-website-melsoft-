@@ -1,85 +1,117 @@
-import React, { useState } from "react";
-import ".BlogSubmissionForm.css";
+import React, { useState, useEffect } from "react";
+import "../components/BlogSubmissionForm.css"; // Add your CSS file import
 
 const BlogSubmissionForm = () => {
-  const [formData, setFormData] = useState({
-    title: "",
-    author: "",
-    content: "",
-  });
+  const [newPost, setNewPost] = useState({ title: "", content: "" });
+  const [posts, setPosts] = useState([]);
+  const [editMode, setEditMode] = useState(false);
+  const [editedPostIndex, setEditedPostIndex] = useState(null);
+  const [showForm, setShowForm] = useState(true);
 
-  const handleChange = (e) => {
+  useEffect(() => {
+    const savedPosts = JSON.parse(localStorage.getItem("posts")) || [];
+    setPosts(savedPosts);
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("posts", JSON.stringify(posts));
+  }, [posts]);
+
+  const handleInputChange = (e) => {
     const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
+    setNewPost((prevPost) => ({ ...prevPost, [name]: value }));
   };
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleCreatePost = () => {
+    try {
+      setPosts([...posts, newPost]);
+      setNewPost({ title: "", content: "" });
+      setShowForm(true);
+    } catch (error) {
+      console.error("Error:", error);
+    }
+  };
 
-    // Add your logic to handle form submission (e.g., API request, state update, etc.)
-    // For this example, we will log the form data to the console
-    console.log("Form Submitted:", formData);
+  const handleEditPost = (index) => {
+    setEditMode(true);
+    setEditedPostIndex(index);
+    setNewPost({ ...posts[index] });
+  };
 
-    // You can add additional logic here, such as making an API request
-    // Example API request using fetch:
-    // fetch('https://api.example.com/blog', {
-    //   method: 'POST',
-    //   headers: {
-    //     'Content-Type': 'application/json',
-    //   },
-    //   body: JSON.stringify(formData),
-    // })
-    //   .then(response => response.json())
-    //   .then(data => console.log('API Response:', data))
-    //   .catch(error => console.error('API Error:', error));
+  const handleSaveEditedPost = () => {
+    const updatedPosts = [...posts];
+    updatedPosts[editedPostIndex] = newPost;
+    setPosts(updatedPosts);
+    setEditMode(false);
+    setEditedPostIndex(null);
+    setNewPost({ title: "", content: "" });
+  };
 
-    // Reset the form after submission
-    setFormData({
-      title: "",
-      author: "",
-      content: "",
-    });
+  const handleDeletePost = (index) => {
+    const updatedPosts = [...posts];
+    updatedPosts.splice(index, 1);
+    setPosts(updatedPosts);
+
+    if (editMode && index === editedPostIndex) {
+      setEditMode(false);
+      setEditedPostIndex(null);
+      setNewPost({ title: "", content: "" });
+    }
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h2>Blog Submission Form</h2>
+    <div className="form-container">
+      <h2>Create/Submit a Blog Post</h2>
+      {editMode ? (
+        <div>
+          <input
+            type="text"
+            name="title"
+            placeholder="Title"
+            value={newPost.title}
+            onChange={handleInputChange}
+          />
+          <textarea
+            name="content"
+            placeholder="Content"
+            value={newPost.content}
+            onChange={handleInputChange}
+          />
+          <button onClick={handleSaveEditedPost}>Save Edited Post</button>
+        </div>
+      ) : (
+        showForm && (
+          <div>
+            <input
+              type="text"
+              name="title"
+              placeholder="Title"
+              value={newPost.title}
+              onChange={handleInputChange}
+            />
+            <textarea
+              name="content"
+              placeholder="Content"
+              value={newPost.content}
+              onChange={handleInputChange}
+            />
+            <button onClick={handleCreatePost}>Submit Blog Post</button>
+          </div>
+        )
+      )}
 
-      <label htmlFor="title">Blog Title:</label>
-      <input
-        type="text"
-        id="title"
-        name="title"
-        value={formData.title}
-        onChange={handleChange}
-        required
-      />
-
-      <label htmlFor="author">Your Name:</label>
-      <input
-        type="text"
-        id="author"
-        name="author"
-        value={formData.author}
-        onChange={handleChange}
-        required
-      />
-
-      <label htmlFor="content">Blog Content:</label>
-      <textarea
-        id="content"
-        name="content"
-        rows="6"
-        value={formData.content}
-        onChange={handleChange}
-        required
-      ></textarea>
-
-      <button type="submit">Submit Blog</button>
-    </form>
+      <div className="created-posts">
+        <h3>Submitted Blog Posts</h3>
+        {posts.map((post, index) => (
+          <div key={index} className="post-card">
+            <h4>{post.title}</h4>
+            <p>{post.content}</p>
+            <button onClick={() => handleEditPost(index)}>Edit</button>
+            <button onClick={() => handleDeletePost(index)}>Delete</button>
+          </div>
+        ))}
+      </div>
+    </div>
   );
 };
 
