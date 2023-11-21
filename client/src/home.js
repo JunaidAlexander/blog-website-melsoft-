@@ -1,61 +1,103 @@
-import React, { useState } from 'react';
+// src/App.js
+import React, { useEffect, useState } from "react";
 
-const CreateBlog = () => {
-  const [blogData, setBlogData] = useState({
-    title: '',
-    snippet: '',
-    body: '',
-  });
+const App = () => {
+	const [posts, setPosts] = useState([]);
+	const [newPost, setNewPost] = useState({
+		title: "",
+		snippet: "",
+		body: ""
+	});
 
-  const handleChange = (e) => {
-    setBlogData({
-      ...blogData,
-      [e.target.name]: e.target.value,
-    });
-  };
+	useEffect(() => {
+		// Fetch the list of posts from the server
+		fetch("http://localhost:3000/posts")
+			.then(response => response.json())
+			.then(data => setPosts(data))
+			.catch(error => console.error("Error fetching posts:", error));
+	}, []);
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // Add your logic to handle the form submission
-    console.log('Form submitted:', blogData);
-  };
+	const handleInputChange = e => {
+		setNewPost({
+			...newPost,
+			[e.target.name]: e.target.value
+		});
+	};
 
-  return (
-    <div className="create-blog content">
-      <form onSubmit={handleSubmit}>
-        <label htmlFor="title">Blog title:</label>
-        <input
-          type="text"
-          id="title"
-          name="title"
-          value={blogData.title}
-          onChange={handleChange}
-          required
-        />
+	const handleAddPost = () => {
+		// Send a POST request to add a new blog post
+		fetch("http://localhost:3000/posts/add", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json"
+			},
+			body: JSON.stringify(newPost)
+		})
+			.then(response => response.json())
+			.then(data => {
+				console.log(data);
+				// Refresh the list of posts after adding a new one
+				fetch("http://localhost:3000/posts")
+					.then(response => response.json())
+					.then(data => setPosts(data))
+					.catch(error => console.error("Error fetching posts:", error));
+			})
+			.catch(error => console.error("Error adding post:", error));
+	};
 
-        <label htmlFor="snippet">Blog snippet:</label>
-        <input
-          type="text"
-          id="snippet"
-          name="snippet"
-          value={blogData.snippet}
-          onChange={handleChange}
-          required
-        />
+	return (
+		<div>
+			<h1>Blog Posts</h1>
+			<ul>
+				{posts.map(post =>
+					<li key={post.id}>
+						<h2>
+							{post.title}
+						</h2>
+						<p>
+							{post.snippet}
+						</p>
+						<p>
+							{post.body}
+						</p>
+					</li>
+				)}
+			</ul>
 
-        <label htmlFor="body">Blog body:</label>
-        <textarea
-          id="body"
-          name="body"
-          value={blogData.body}
-          onChange={handleChange}
-          required
-        ></textarea>
+			<h2>Add a New Post</h2>
+			<form>
+				<label htmlFor="title">Title:</label>
+				<input
+					type="text"
+					id="title"
+					name="title"
+					value={newPost.title}
+					onChange={handleInputChange}
+				/>
 
-        <button type="submit">Submit</button>
-      </form>
-    </div>
-  );
+				<label htmlFor="snippet">Snippet:</label>
+				<input
+					type="text"
+					id="snippet"
+					name="snippet"
+					value={newPost.snippet}
+					onChange={handleInputChange}
+				/>
+
+				<label htmlFor="body">Body:</label>
+				<textarea
+					id="body"
+					name="body"
+					value={newPost.body}
+					onChange={handleInputChange}
+				/>
+
+				<button type="button" onClick={handleAddPost}>
+					Add Post
+				</button>
+			</form>
+		</div>
+	);
 };
 
-export default CreateBlog;
+export default App;

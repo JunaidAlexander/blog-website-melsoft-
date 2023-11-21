@@ -1,0 +1,18 @@
+
+{
+  "posts": [
+    {
+      "id": 1,
+      "title": "First Blog Post",
+      "snippet": "This is the snippet of the first blog post.",
+      "body": "This is the body of the first blog post."
+    },
+    {
+      "id": 2,
+      "title": "Second Blog Post",
+      "snippet": "This is the snippet of the second blog post.",
+      "body": "This is the body of the second blog post."
+    }
+    
+  ]
+}
