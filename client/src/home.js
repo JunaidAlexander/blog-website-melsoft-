@@ -1,4 +1,4 @@
-// src/App.js
+import "./home.css";
 import React, { useEffect, useState } from "react";
 
 const App = () => {
@@ -11,7 +11,7 @@ const App = () => {
 
 	useEffect(() => {
 		// Fetch the list of posts from the server
-		fetch("http://localhost:3000/posts")
+		fetch("http://localhost:3000/apis/blogs")
 			.then(response => response.json())
 			.then(data => setPosts(data))
 			.catch(error => console.error("Error fetching posts:", error));
@@ -26,7 +26,7 @@ const App = () => {
 
 	const handleAddPost = () => {
 		// Send a POST request to add a new blog post
-		fetch("http://localhost:3000/posts/add", {
+		fetch("http://localhost:3000/apis/blogs", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -37,7 +37,7 @@ const App = () => {
 			.then(data => {
 				console.log(data);
 				// Refresh the list of posts after adding a new one
-				fetch("http://localhost:3000/posts")
+				fetch()
 					.then(response => response.json())
 					.then(data => setPosts(data))
 					.catch(error => console.error("Error fetching posts:", error));
@@ -46,7 +46,7 @@ const App = () => {
 	};
 
 	return (
-		<div>
+		<div className="home">
 			<h1>Blog Posts</h1>
 			<ul>
 				{posts.map(post =>
