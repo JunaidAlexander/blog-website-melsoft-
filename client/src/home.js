@@ -10,11 +10,13 @@ const App = () => {
 	});
 
 	useEffect(() => {
-		// Fetch the list of posts from the server
-		fetch("http://localhost:3000/apis/blogs")
-			.then(response => response.json())
-			.then(data => setPosts(data))
-			.catch(error => console.error("Error fetching posts:", error));
+		const getPosts = async () => {
+			await fetch("http://localhost:3000/api/blogs")
+				.then(response => response.json())
+				.then(data => setPosts(data))
+				.catch(error => console.error("Error fetching posts:", error));
+		};
+		getPosts();
 	}, []);
 
 	const handleInputChange = e => {
@@ -24,9 +26,9 @@ const App = () => {
 		});
 	};
 
-	const handleAddPost = () => {
+	const handleAddPost = async () => {
 		// Send a POST request to add a new blog post
-		fetch("http://localhost:3000/apis/blogs", {
+		await fetch("http://localhost:3000/api/blogs", {
 			method: "POST",
 			headers: {
 				"Content-Type": "application/json"
@@ -34,17 +36,20 @@ const App = () => {
 			body: JSON.stringify(newPost)
 		})
 			.then(response => response.json())
-			.then(data => {
+			.then(async data => {
 				console.log(data);
 				// Refresh the list of posts after adding a new one
-				fetch()
-					.then(response => response.json())
-					.then(data => setPosts(data))
-					.catch(error => console.error("Error fetching posts:", error));
+				await getPosts();
 			})
 			.catch(error => console.error("Error adding post:", error));
 	};
 
+	const getPosts = async () => {
+		await fetch("http://localhost:3000/api/blogs")
+			.then(response => response.json())
+			.then(data => setPosts(data))
+			.catch(error => console.error("Error fetching posts:", error));
+	};
 	return (
 		<div className="home">
 			<h1>Blog Posts</h1>
