@@ -1,0 +1,38 @@
+.about-section {
+  padding: 50px 0;
+}
+* {
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.about-content {
+  display: flex;
+  align-items: center;
+}
+
+.video-container {
+  flex: 1;
+  margin-right: 20px;
+}
+
+.video-container iframe {
+  width: 100%;
+  height: 400px;
+}
+
+.about-text {
+  flex: 1;
+}
+
+.about-text h2 {
+  font-size: 30px;
+
+  color: #e96656;
+}
+
+.about-text p {
+  margin-bottom: 80px;
+  font-size: 1.5 rem;
+  line-height: 1.6;
+  color: #555;
+}

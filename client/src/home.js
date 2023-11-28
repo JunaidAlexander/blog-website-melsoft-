@@ -1,6 +1,7 @@
 import "./home.css";
 import React, { useEffect, useState } from "react";
 
+
 const App = () => {
 	const [posts, setPosts] = useState([]);
 	const [newPost, setNewPost] = useState({
@@ -94,6 +95,7 @@ const App = () => {
 			console.error("Error deleting post:", error);
 		}
 	};
+	
 	return (
 		<div className="home">
 			<h1>Blog Posts</h1>
