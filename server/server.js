@@ -58,6 +58,51 @@ app.post("/api/blogs", async (req, res) => {
 	}
 });
 
+app.put("/api/blogs/:id", async (req, res) => {
+	try {
+		const jsonFile = await readData();
+		const blogId = req.params.id;
+
+		// Find the index of the blog with the given ID
+		const blogIndex = jsonFile.blogs.findIndex(blog => blog.id === blogId);
+
+		if (blogIndex === -1) {
+			return res
+				.status(404)
+				.json({ success: false, message: "Blog not found" });
+		}
+
+		// Update the blog with the new data
+		jsonFile.blogs[blogIndex] = { ...jsonFile.blogs[blogIndex], ...req.body };
+
+		// Write the updated data back to the JSON file
+		await fs.writeFile(blogsFilePath, JSON.stringify(jsonFile, null, 2));
+
+		res.json({ success: true, message: "Blog updated successfully" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: "Internal server error" });
+	}
+});
+
+app.delete("/api/blogs/:id", async (req, res) => {
+	try {
+		const jsonFile = await readData();
+		const blogId = req.params.id;
+		console.log(blogId);
+		// Filter out the blog with the given ID
+		jsonFile.blogs = jsonFile.blogs.filter(blog => blog.id !== blogId);
+
+		// Write the updated data back to the JSON file
+		await fs.writeFile(blogsFilePath, JSON.stringify(jsonFile, null, 2));
+
+		res.json({ success: true, message: "Blog deleted successfully" });
+	} catch (error) {
+		console.error(error);
+		res.status(500).json({ success: false, message: "Internal server error" });
+	}
+});
+
 app.listen(port, () => {
 	console.log(`Server is running at http://localhost:${port}`);
 });

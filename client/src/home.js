@@ -11,10 +11,13 @@ const App = () => {
 
 	useEffect(() => {
 		const getPosts = async () => {
-			await fetch("http://localhost:3000/api/blogs")
-				.then(response => response.json())
-				.then(data => setPosts(data))
-				.catch(error => console.error("Error fetching posts:", error));
+			try {
+				const response = await fetch("http://localhost:3000/api/blogs");
+				const data = await response.json();
+				setPosts(data);
+			} catch (error) {
+				console.error("Error fetching posts:", error);
+			}
 		};
 		getPosts();
 	}, []);
@@ -27,70 +30,75 @@ const App = () => {
 	};
 
 	const handleAddPost = async () => {
-		// Send a POST request to add a new blog post
-		await fetch("http://localhost:3000/api/blogs", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(newPost)
-		})
-			.then(response => response.json())
-			.then(async data => {
-				console.log(data);
-				// Refresh the list of posts after adding a new one
-				await getPosts();
-			})
-			.catch(error => console.error("Error adding post:", error));
+		try {
+			const response = await fetch("http://localhost:3000/api/blogs", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json"
+				},
+				body: JSON.stringify(newPost)
+			});
+			const data = await response.json();
+			console.log(data);
+			await getPosts();
+		} catch (error) {
+			console.error("Error adding post:", error);
+		}
 	};
 
 	const getPosts = async () => {
-		await fetch("http://localhost:3000/api/blogs")
-			.then(response => response.json())
-			.then(data => setPosts(data))
-			.catch(error => console.error("Error fetching posts:", error));
+		try {
+			const response = await fetch("http://localhost:3000/api/blogs");
+			const data = await response.json();
+			setPosts(data);
+		} catch (error) {
+			console.error("Error fetching posts:", error);
+		}
 	};
+
 	const handleEditPost = async post => {
-		// Send a PUT request to edit a blog post
-		await fetch(`http://localhost:3000/api/blogs/${post.id}`, {
-			method: "PUT",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(newPost)
-		})
-			.then(response => response.json())
-			.then(async data => {
-				console.log(data);
-				// Refresh the list of posts after adding a new one
-				await getPosts();
-			})
-			.catch(error => console.error("Error editing post:", error));
+		try {
+			const response = await fetch(
+				`http://localhost:3000/api/blogs/${post.id}`,
+				{
+					method: "PUT",
+					headers: {
+						"Content-Type": "application/json"
+					},
+					body: JSON.stringify(newPost)
+				}
+			);
+			const data = await response.json();
+			console.log(data);
+			await getPosts();
+		} catch (error) {
+			console.error("Error editing post:", error);
+		}
 	};
 
 	const handleDeletePost = async post => {
-		// Send a DELETE request to delete a blog post
-		await fetch(`http://localhost:3000/api/blogs/${post.id}`, {
-			method: "DELETE",
-			headers: {
-				"Content-Type": "application/json"
-			},
-			body: JSON.stringify(newPost)
-		})
-			.then(response => response.json())
-			.then(async data => {
-				console.log(data);
-				// Refresh the list of posts after adding a new one
-				await getPosts();
-			})
-			.catch(error => console.error("Error deleting post:", error));
+		try {
+			const response = await fetch(
+				`http://localhost:3000/api/blogs/${post.id}`,
+				{
+					method: "DELETE",
+					headers: {
+						"Content-Type": "application/json"
+					}
+				}
+			);
+			const data = await response.json();
+			console.log(data);
+			await getPosts();
+		} catch (error) {
+			console.error("Error deleting post:", error);
+		}
 	};
-
 	return (
 		<div className="home">
 			<h1>Blog Posts</h1>
 			<ul>
-				{posts.map(post =>
+				{posts.map((post =>
 					<li key={post.id}>
 						<h2>
 							{post.title}
@@ -101,8 +109,14 @@ const App = () => {
 						<p>
 							{post.body}
 						</p>
+						<button type="button" onClick={() => handleEditPost(post)}>
+							Edit
+						</button>
+						<button type="button" onClick={() => handleDeletePost(post)}>
+							Delete
+						</button>
 					</li>
-				)}
+				))}
 			</ul>
 
 			<h2>Add a New Post</h2>
@@ -135,12 +149,6 @@ const App = () => {
 
 				<button type="button" onClick={handleAddPost}>
 					Add Post
-				</button>
-				<button type="button" onClick={() => handleEditPost(posts)}>
-					Edit
-				</button>
-				<button type="button" onClick={() => handleDeletePost(posts)}>
-					Delete
 				</button>
 			</form>
 		</div>
